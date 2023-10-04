@@ -1,6 +1,8 @@
 name: Count Severity
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
       file_name:
@@ -22,14 +24,17 @@ jobs:
           chmod +x count_severity.sh
           ./count_severity.sh "$file_name" > result.json
           cat result.json
+
       - name: Generate HTML Summary
+        uses: actions/github-script@v6
         if: always()
-        run: |
-           echo "<html><body><table border='1'><thead><tr><th>Severity</th><th>Count</th></tr></thead><tbody>" > $GITHUB_WORKSPACE/summary.html
-           cat result.json | jq -r '.SeverityCount[] | "<tr><td>\(.severity)</td><td>\(.count)</td></tr>"' >> $GITHUB_WORKSPACE/summary.html
-           echo "</tbody></table>" >> $GITHUB_WORKSPACE/summary.html
-           echo "<p>Trafficlight: $(jq -r '.Trafficlight' result.json)</p>" >> $GITHUB_WORKSPACE/summary.html
-           echo "</body></html>" >> $GITHUB_WORKSPACE/summary.html
+        with:
+         script: |
+          echo "<html><body><table border='1'><thead><tr><th>Severity</th><th>Count</th></tr></thead><tbody>" > $GITHUB_WORKSPACE/summary.html
+          cat result.json | jq -r '.SeverityCount[] | "<tr><td>\(.severity)</td><td>\(.count)</td></tr>"' >> $GITHUB_WORKSPACE/summary.html
+          echo "</tbody></table>" >> $GITHUB_WORKSPACE/summary.html
+          echo "<p>Trafficlight: $(jq -r '.Trafficlight' result.json)</p>" >> $GITHUB_WORKSPACE/summary.html
+          echo "</body></html>" >> $GITHUB_WORKSPACE/summary.html
 
       - name: Display
-        run:  cat $GITHUB_WORKSPACE/summary.html >> $GITHUB_STEP_SUMMARY
+        run: cat $GITHUB_WORKSPACE/summary.html >> $GITHUB_STEP_SUMMARY
