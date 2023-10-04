@@ -28,7 +28,7 @@ jobs:
         if: always()
         run: |
           echo "<html><body><table border='1'><thead><tr><th>Severity</th><th>Count</th></tr></thead><tbody>" > $GITHUB_WORKSPACE/summary.html
-          cat result.json  >> $GITHUB_WORKSPACE/summary.html
+          cat result.json | jq -r '.[] | "<tr><td>\(.severity)</td><td>\(.count)</td></tr>"' >> $GITHUB_WORKSPACE/summary.html
           echo "</tbody></table></body></html>" >> $GITHUB_WORKSPACE/summary.html
 
       - name: Display
