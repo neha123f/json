@@ -27,8 +27,8 @@ jobs:
       - name: Format and Display Table
         run: |
           echo "user-input summary"
-          echo "::set-output name=table::\`\`\`json\n$(cat result.json)\n\`\`\`"
+          echo "::set-output name=table::\`\`\`json\n$(cat result.json)\n\`\`\`" >> $GITHUB_STEP_SUMMARY
 
-      - name: Display Table in Job Summary
-        run: |
-          echo "${{ steps.Format.outputs.table }}" >> $GITHUB_STEP_SUMMARY
+      #- name: Display Table in Job Summary
+       # run: |
+        #  echo "${{ steps.Format.outputs.table }}" >> $GITHUB_STEP_SUMMARY
