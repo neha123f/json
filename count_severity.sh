@@ -11,5 +11,8 @@ json_file="$1"
 
 # Use jq to count and format severity levels
 cat "$json_file" | jq '[.. | select(.severity?)] | group_by(.severity) | map({severity: .[0].severity, count: length})'
-trafficlight_value=$(cat "$json_file" | jq '. | select(.Trafficlight != null).Trafficlight')
-echo  "Trafficlight:$trafficlight_value"
+
+# Use jq to extract the "trafficLight" value (lowercase "t")
+trafficlight_value=$(cat "$json_file" | jq -r '.trafficLight')
+
+echo  "Trafficlight: $trafficlight_value"
