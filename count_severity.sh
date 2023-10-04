@@ -13,6 +13,6 @@ json_file="$1"
 cat "$json_file" | jq '[.. | select(.severity?)] | group_by(.severity) | map({severity: .[0].severity, count: length})'
 
 # Use jq to extract the "Trafficlight" value (correct capitalization)
-trafficlight_value=$(cat "$json_file" | jq -r '.Trafficlight')
+trafficlight_value=$(cat "$json_file" | jq -r '.trafficLight')
 
 echo  "Trafficlight: $trafficlight_value"
