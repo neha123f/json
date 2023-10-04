@@ -22,4 +22,13 @@ jobs:
           echo "User input: $file_name"
           # Use $file_name in your script
           chmod +x count_severity.sh
-          ./count_severity.sh "$file_name" >> $GITHUB_STEP_SUMMARY
+          ./count_severity.sh "$file_name" > result.json
+          
+      - name: Format and Display Table
+        run: |
+          echo "user-input summary"
+          echo "::set-output name=table::\`\`\`json\n$(cat result.json)\n\`\`\`"
+
+      - name: Display Table in Job Summary
+        run: |
+          echo "${{ steps.Format.outputs.table }}"
