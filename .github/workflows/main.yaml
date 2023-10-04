@@ -24,7 +24,11 @@ jobs:
           # Use $file_name in your script
           chmod +x count_severity.sh
           output=$(./count_severity.sh "$file_name")
-          echo "::set-output name=output::$output"
+          echo "$output" > output.json
+          echo "Output file created."
+
+      - name: Set Output
+        run: echo "::set-output name=output::$(cat output.json)"
 
       - name: Display Output as Table
         run: |
