@@ -33,9 +33,3 @@ jobs:
 
       - name: Display
         run:  cat $GITHUB_WORKSPACE/summary.html >> $GITHUB_STEP_SUMMARY
-
-
-
-      #- name: Display Table in Job Summary
-       # run: |
-        #  echo "${{ steps.Format.outputs.table }}" >> $GITHUB_STEP_SUMMARY
