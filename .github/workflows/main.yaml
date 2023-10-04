@@ -29,12 +29,12 @@ jobs:
         uses: actions/github-script@v6
         if: always()
         with:
-         script: |
-          echo "<html><body><table border='1'><thead><tr><th>Severity</th><th>Count</th></tr></thead><tbody>" > $GITHUB_WORKSPACE/summary.html
-          cat result.json | jq -r '.SeverityCount[] | "<tr><td>\(.severity)</td><td>\(.count)</td></tr>"' >> $GITHUB_WORKSPACE/summary.html
-          echo "</tbody></table>" >> $GITHUB_WORKSPACE/summary.html
-          echo "<p>Trafficlight: $(jq -r '.Trafficlight' result.json)</p>" >> $GITHUB_WORKSPACE/summary.html
-          echo "</body></html>" >> $GITHUB_WORKSPACE/summary.html
+          script: |
+            echo "<html><body><table border='1'><thead><tr><th>Severity</th><th>Count</th></tr></thead><tbody>" > $GITHUB_WORKSPACE/summary.html
+            cat result.json | jq -r '.SeverityCount[] | "<tr><td>\(.severity)</td><td>\(.count)</td></tr>"' >> $GITHUB_WORKSPACE/summary.html
+            echo "</tbody></table>" >> $GITHUB_WORKSPACE/summary.html
+            echo "<p>Trafficlight: $(jq -r '.Trafficlight' result.json)</p>" >> $GITHUB_WORKSPACE/summary.html
+            echo "</body></html>" >> $GITHUB_WORKSPACE/summary.html
 
       - name: Display
         run: cat $GITHUB_WORKSPACE/summary.html >> $GITHUB_STEP_SUMMARY
