@@ -16,10 +16,18 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run Custom Script
+        id: custom-script
         run: |
           # Access the input parameter value using ${{ github.event.inputs.file_name }}
           file_name="${{ github.event.inputs.file_name }}"
           echo "User input: $file_name"
           # Use $file_name in your script
           chmod +x count_severity.sh
-          ./count_severity.sh "$file_name"
+          output=$(./count_severity.sh "$file_name")
+          echo "::set-output name=output::$output"
+
+      - name: Display Output as Table
+        run: |
+          output="${{ steps.custom-script.outputs.output }}"
+          echo "Output from the script:"
+          echo "$output" | jq -r '["Severity", "Count"], (.[] | [.severity, .count]) | @tsv' | awk -F'\t' '{printf "| %-10s | %s |\n", $1, $2}'
