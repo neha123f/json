@@ -8,7 +8,7 @@ on:
         required: true
 
 jobs:
-  user-input:
+  count_severity:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,10 +17,8 @@ jobs:
 
       - name: Run Custom Script
         run: |
-          # Access the input parameter value using ${{ github.event.inputs.file_name }}
           file_name="${{ github.event.inputs.file_name }}"
           echo "User input: $file_name"
-          # Use $file_name in your script
           chmod +x count_severity.sh
           ./count_severity.sh "$file_name" > result.json
           
