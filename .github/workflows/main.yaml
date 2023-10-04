@@ -31,4 +31,4 @@ jobs:
 
       - name: Display Table in Job Summary
         run: |
-          echo "${{ steps.Format.outputs.table }}"
+          echo "${{ steps.Format.outputs.table }}" >> $GITHUB_STEP_SUMMARY
