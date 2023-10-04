@@ -31,6 +31,10 @@ jobs:
           cat result.json  >> $GITHUB_WORKSPACE/summary.html
           echo "</tbody></table></body></html>" >> $GITHUB_WORKSPACE/summary.html
 
+      - name: Display
+        run:  cat $GITHUB_WORKSPACE/summary.html >> $GITHUB_STEP_SUMMARY
+
+
 
       #- name: Display Table in Job Summary
        # run: |
