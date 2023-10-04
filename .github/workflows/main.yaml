@@ -21,6 +21,7 @@ jobs:
           echo "User input: $file_name"
           chmod +x count_severity.sh
           ./count_severity.sh "$file_name" > result.json
+          cat result.json
           
       - name: Generate HTML Summary
         if: always()
