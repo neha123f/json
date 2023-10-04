@@ -1,10 +1,10 @@
-name: Workflow with User Input
+name: Count Severity
 
 on:
   workflow_dispatch:
     inputs:
-      folder_number:
-        description: 'Enter the folder number '
+      file_name:
+        description: 'Enter the json file '
         required: true
 
 jobs:
@@ -14,14 +14,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-           ref: branch1
 
       - name: Run Custom Script
         run: |
-          # Access the input parameter value using ${{ github.event.inputs.folder_number }}
-          folder_number="${{ github.event.inputs.folder_number }}"
-          echo "User input: $folder_number"
-          # Use $folder_number in your script
-          chmod +x script1.sh
-          ./script1.sh "$folder_number"
+          # Access the input parameter value using ${{ github.event.inputs.file_name }}
+          file_name="${{ github.event.inputs.file_name }}"
+          echo "User input: $file_name"
+          # Use $file_name in your script
+          chmod +x count_severity.sh
+          ./count_severity.sh "$file_name"
