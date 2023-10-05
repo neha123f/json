@@ -28,45 +28,44 @@ jobs:
       - name: Generate HTML Summary
         if: always()
         uses: actions/github-script@v6
-        with:
-         github-token: ${{ secrets.GITHUB_TOKEN }}
+        with: 
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+                 const fs = require('fs');
+                 const path = require('path');
 
-         script: |
-           const fs = require('fs');
-           const path = require('path');
+                        // Read the JSON data from result.json
+                 const resultData = fs.readFileSync('result.json', 'utf8');
+                 const jsonData = JSON.parse(resultData);
 
-            // Create HTML content
-            const htmlContent = `   
-              <html>
-               <body>
-                  <table border='1'>
-               <thead>
-                <tr>
-                  <th>Severity</th>
-                  <th>Count</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${fs.readFileSync('result.json').toString()
-                  |> JSON.parse
-                  |> (data) =>
-                    data.SeverityCount
-                      |> (severityCount) =>
-                        severityCount
-                          .map(
-                            ({ severity, count }) =>
-                              `<tr><td>${severity}</td><td>${count}</td></tr>`
-                          )
-                          .join('')}
-              </tbody>
-            </table>
-            <p>Trafficlight: ${fs.readFileSync('result.json').toString() |> JSON.parse |> (data) => data.Trafficlight}</p>
-             </body>
-             </html>
-             `;
+                     // Generate the HTML content
+                   let tableRows = '';
+                  for (const item of jsonData.SeverityCount) {
+                  tableRows += `<tr><td>${item.severity}</td><td>${item.count}</td></tr>`;
+                   }
 
-              // Write the HTML content to summary.html
-            fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'summary.html'), htmlContent);
+                 const htmlContent = `
+                 <html>
+                   <body>
+                    <table border='1'>
+                     <thead>
+                       <tr>
+                        <th>Severity</th>
+                       <th>Count</th>
+                         </tr>
+                      </thead>
+                     <tbody>
+                      ${tableRows}
+                      </tbody>
+                   </table>
+                  <p>Trafficlight: ${jsonData.Trafficlight}</p>
+                    </body>
+                      </html>
+                 `;
+
+                  // Write the HTML content to summary.html
+                 fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'summary.html'), htmlContent);
+
 
 
       - name: Display
