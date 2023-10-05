@@ -26,15 +26,48 @@ jobs:
           cat result.json
 
       - name: Generate HTML Summary
-        uses: actions/github-script@v6
         if: always()
+        uses: actions/github-script@v4
         with:
-          script: |
-            echo "<html><body><table border='1'><thead><tr><th>Severity</th><th>Count</th></tr></thead><tbody>" > $GITHUB_WORKSPACE/summary.html
-            cat result.json | jq -r '.SeverityCount[] | "<tr><td>\(.severity)</td><td>\(.count)</td></tr>"' >> $GITHUB_WORKSPACE/summary.html
-            echo "</tbody></table>" >> $GITHUB_WORKSPACE/summary.html
-            echo "<p>Trafficlight: $(jq -r '.Trafficlight' result.json)</p>" >> $GITHUB_WORKSPACE/summary.html
-            echo "</body></html>" >> $GITHUB_WORKSPACE/summary.html
+         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+         script: |
+           const fs = require('fs');
+           const path = require('path');
+
+            // Create HTML content
+            const htmlContent = `   
+              <html>
+               <body>
+                  <table border='1'>
+               <thead>
+                <tr>
+                  <th>Severity</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${fs.readFileSync('result.json').toString()
+                  |> JSON.parse
+                  |> (data) =>
+                    data.SeverityCount
+                      |> (severityCount) =>
+                        severityCount
+                          .map(
+                            ({ severity, count }) =>
+                              `<tr><td>${severity}</td><td>${count}</td></tr>`
+                          )
+                          .join('')}
+              </tbody>
+            </table>
+            <p>Trafficlight: ${fs.readFileSync('result.json').toString() |> JSON.parse |> (data) => data.Trafficlight}</p>
+             </body>
+             </html>
+             `;
+
+              // Write the HTML content to summary.html
+            fs.writeFileSync(path.join(process.env.GITHUB_WORKSPACE, 'summary.html'), htmlContent);
+
 
       - name: Display
         run: cat $GITHUB_WORKSPACE/summary.html >> $GITHUB_STEP_SUMMARY
