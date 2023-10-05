@@ -6,7 +6,7 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-# Get the JSON filename from the command line 
+# Get the JSON filename from the cmd
 json_file="$1"
 
 # Use jq to count and format severity levels
