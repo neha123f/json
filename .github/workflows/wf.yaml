@@ -1,0 +1,39 @@
+name: SAP BTP Deployment
+
+on:
+  # deployment will take place on GitHub PUSH action, whenever there is a push to the 'master' branch (we can change it to any action, Ex: COMMIT)
+ # push:
+   # branches:
+     # - master
+  # for manual deployement
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+
+jobs:
+  deploy:
+    name: Deployment
+    runs-on: ubuntu-latest
+    # the jobs which will run on this event
+    steps:
+      - name: Checkout to repository
+        uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Load NPM dependencies
+        run: yarn
+      - name: Build UI5 Project
+        run: yarn build-all
+      - name: Deploying Project
+        uses: integrtr/ui5-deploy@master
+        with:
+          type: 'neo'
+          user: ${{ secrets.NEO_USER }}
+          password: ${{ secrets.NEO_PASSWORD }}
+          host: ${{ secrets.NEO_HOST }}
+          sub-account-id: ${{ secrets.NEO_ACCOUNT }}
